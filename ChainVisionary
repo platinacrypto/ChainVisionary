@@ -1,0 +1,43 @@
+# scripts/transaction_analysis.py
+
+import requests
+import pandas as pd
+
+def fetch_transaction_data(api_url, transaction_id):
+    """
+    Fetch transaction data from an API.
+    
+    :param api_url: Base URL of the blockchain API
+    :param transaction_id: ID of the transaction to fetch data for
+    :return: DataFrame with transaction data
+    """
+    response = requests.get(f'{api_url}/transactions/{transaction_id}')
+    response.raise_for_status()
+    data = response.json()
+    df = pd.DataFrame([data])
+    return df
+
+def analyze_transaction_data(df):
+    """
+    Analyze transaction data.
+    
+    :param df: DataFrame with transaction data
+    :return: Analysis results as DataFrame
+    """
+    analysis = {
+        'transaction_id': df['id'].iloc[0],
+        'from_address': df['from'].iloc[0],
+        'to_address': df['to'].iloc[0],
+        'amount': df['amount'].iloc[0],
+        'timestamp': df['timestamp'].iloc[0]
+    }
+    analysis_df = pd.DataFrame([analysis])
+    return analysis_df
+
+# Example usage:
+# api_url = 'https://api.blockchain.example.com'
+# transaction_id = 'tx_123'
+# transaction_data_df = fetch_transaction_data(api_url, transaction_id)
+# print(transaction_data_df)
+# transaction_analysis_df = analyze_transaction_data(transaction_data_df)
+# print(transaction_analysis_df)
